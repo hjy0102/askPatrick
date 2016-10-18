@@ -88,7 +88,8 @@ ask(Q,A) :-
 
 % To get the input from a line:
 
-q(Ans) :-
+askPatrick(Ans) :-
+    write("Hi, my name is Patrick".),
     write("Ask me: "),
     readln(Ln),
     write("Sorry, I don't know anything"),
