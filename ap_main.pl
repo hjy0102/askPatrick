@@ -103,10 +103,7 @@ noun([Ind | T], T, Ind) :- friend(Ind).
 %   on individuals I1 and I2
 reln([enrolled, in | T],T,Subject,Object) :- enrolled_in(Subject,Object).
 reln([passed | T],T,Subject,Object) :- passed(Subject,Object).
-
-% Some Example Queries
-% ask noun_phrase([a,computer,science,course],R,Ind,[],C).
-% ask noun_phrase([a,tall,student,enrolled,in,a,computer,science,course],R,Ind,[],C).
+reln([is a friend| T], T, Subject, Object) :- friend(Subject, Object).
 
 % question(Question,QR,Ind) is true if Question-QR is true of Ind
 question([is | T0],T2,Ind) :-
