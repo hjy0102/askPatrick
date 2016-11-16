@@ -5,112 +5,79 @@
 %	askPatrick([...], R). or askPatrick(Q, R), readln(Q).
 %		where ... is a list of words
 
-% askPatrick(Q, [thats, a, good, question]) :- dl_question(Q, []).
-% askPatrick(Q, [thats, a, strange, question]) :- \+ dl_question(Q, []).
+askPatrick(Q, [thats, a, good, question]) :- dl_question(Q, []).
+askPatrick(Q, [thats, a, strange, question]) :- \+ dl_question(Q, []).
 
-% askPatrick(Q, A) :- filter(Q, R), answer(R, A).
-
-
-% To get the input from a line:
-
-askPatrick(Ans) :-
-write("Ask Patrick: "),
-readln(Ln),
-dl_question(Ln, []),
-write("That's a good question"),
-answer(
-member(End,[[],['?'],['.']]).
-
-askPatrick(Ans) :-
-write("Ask Patrick: "),
-readln(Ln),
-\+ dl_question(Ln, []),
-write("That's a strange question"),
-member(End,[[],['?'],['.']]).
-
-/*
-?- askPatrick(Ans).
-Ask me: who is a tall student enrolled in a computer science course?
-Ans = mary ;
-Ans = john ;
-false.
-*/
-
+askPatrick(Q, A) :- filter(Q, R), answer(R, A).
 
 % what is an unknown thing?
 answer([what|Q], R) :- dl_verb_be(Q,Q1, Conj), dl_nounphrase(Q1,[], Conj),
-\+ knownthing(Q1,[], _,_),
-dl_append([i,do,not,know,any,one,thing,that],[], Q,Q1, Q1,[], R).
-
+	\+ knownthing(Q1,[], _,_),
+	dl_append([i,do,not,know,any,one,thing,that],[], Q,Q1, Q1,[], R).
+	
 % who is an unknown person?
 answer([who|Q], R) :- dl_verb_be(Q,Q1, vc_tps),
-\+ knownthing(Q1,[], _,_),
-dl_append([i,do,not,know,any,one,person,who],[], Q,Q1, Q1,[], R).
+	\+ knownthing(Q1,[], _,_),
+	dl_append([i,do,not,know,any,one,person,who],[], Q,Q1, Q1,[], R).
 
 % what is an example of a thing?
 answer([what|Q], R) :- dl_verb_be(Q,Q1, vc_tps),
-knownthing(Q1,[], I,[]),
-dl_append(I,[], Q,Q1, Q1,[], R).
+	knownthing(Q1,[], I,[]),
+	dl_append(I,[], Q,Q1, Q1,[], R).
 
 % who is an example of a person?
 answer([who|Q], R) :- dl_verb_be(Q,Q1, vc_tps),
-knownthing(Q1,[], I,[]),
-type(I,[], [person],[]),
-dl_append(I,[], Q,Q1, Q1,[], R).
-
+	knownthing(Q1,[], I,[]),
+	type(I,[], [person],[]),
+	dl_append(I,[], Q,Q1, Q1,[], R).
+	
 % what is a type of thing like?
 answer([what|Q], R) :- dl_verb_be(Q,Q1, vc_tps),
-thingcanbetype(Q1,[], P,[]),
-dl_append([a|P],[], Q,Q1, Q1,[], R).
-
-% what is a thing that's like this?
-answer([what|Q], R) :- dl_verb_be(Q,Q1, vc_tps),
-thingcanbetype(Q1,[], P,[]),
-type(I,[], P,[]),
-dl_append(I,[], Q,Q1, Q1,[], R).
+	thingcanbetype(Q1,[], P,[]),
+	dl_append([a|P],[], Q,Q1, Q1,[], R).
 
 % what is a property of this type?
 answer([what|Q], R) :-
-dl_verb_be(Q,[a|Q1], vc_tps),
-typeprop(Q1,[], P,[]),
-dl_append([a|Q1],[], Q,[a|Q1], P,[], R).
-
+	dl_verb_be(Q,[a|Q1], vc_tps),
+	typeprop(Q1,[], P,[]),
+	dl_append([a|Q1],[], Q,[a|Q1], P,[], R).
+	
 % what type of thing is this?
 answer([what|Q], R) :- dl_verb_be(Q,Q1, vc_tps),
-type(Q1,[], T,[]),
-dl_append(Q1,[], Q,Q1, [a|T],[], R).
-
+	type(Q1,[], T,[]),
+	dl_append(Q1,[], Q,Q1, [a|T],[], R).
+	
 % what type of thing is a thing?
 answer([what|Q], R) :- dl_verb_be(Q,[a|Q1], vc_tps),
-inherits([a|Q1],[], T,[]),
-dl_append([a|Q1],[], Q,Q1, T,[], R).
-
+	inherits([a|Q1],[], T,[]),
+	dl_append([a|Q1],[], Q,Q1, T,[], R).
+	
 % what is a property of this person?
 answer([who|Q], R) :- dl_verb_be(Q,Q1, vc_tps),
-prop(Q1,[], P,[]),
-type(Q1,[], [person],[]),
-dl_append([a|Q1],[], Q,Q1, P,[], R).
-
+	prop(Q1,[], P,[]),
+	type(Q1,[], [person],[]),
+	dl_append([a|Q1],[], Q,Q1, P,[], R).
+	
 % who is a person that's like this?
 answer([who|Q], R) :- dl_verb_be(Q,Q1, vc_tps), dl_adjectives(Q1,[]),
-props(I,[], Q1,[]),
-type(I,[], [person],[]),
-dl_append(I,[], Q,Q1, Q1,[], R).
-
+	props(I,[], Q1,[]),
+	type(I,[], [person],[]),
+	dl_append(I,[], Q,Q1, Q1,[], R).
+	
 % what is a thing that's like this?
 answer([what|Q], R) :- dl_verb_be(Q,Q1, vc_tps), dl_adjectives(Q1,[]),
-props(I,[], Q1,[]),
-dl_append(I,[], Q,Q1, Q1,[], R).
-
+	props(I,[], Q1,[]),
+	dl_append(I,[], Q,Q1, Q1,[], R).
+	
 % what has these properties?
 answer([what|Q], R) :- dl_verb_be(Q,Q1, vc_tps), dl_adjectives(Q1,[]),
-s_typeprops(T,[], Q1,[]),
-dl_append([a|T],[], Q,Q1, Q1,[], R).
-
+	s_typeprops(T,[], Q1,[]),
+	dl_append([a|T],[], Q,Q1, Q1,[], R).
+	
 % what is a property of this known thing?
 answer([what|Q], R) :- dl_verb_be(Q,Q1, vc_tps),
-prop(Q1,[], P,[]),
-dl_append(Q1,[], Q,Q1, P,[], R).
+	prop(Q1,[], P,[]),
+	dl_append(Q1,[], Q,Q1, P,[], R).
 
 
 % deny simple imperative orders
@@ -131,7 +98,7 @@ filter_swap(your, my).
 % |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 % Difference List Helper Functions --------------------------------
 
-% dl_equal(T,T1, S,S1) is true if the difference lists T,T1 and S,S1 are equal but do not
+% dl_equal(T,T1, S,S1) is true if the difference lists T,T1 and S,S1 are equal but do not 
 dl_equal(T,T, S,S).
 dl_equal([H|T],T1, [H|S],S1) :- dl_equal(T,T1, S,S1).
 
@@ -172,13 +139,13 @@ dl_question([why | T], T3) :- dl_verb_do(T, T1, Conj), dl_nounphrase(T1, T2, Con
 %	dl_nounphrase(T, T1, Conj)
 %		where T, T1 is a difference list and Conj is the standard atom for verb conjugation (see dl_verb usage)
 dl_nounphrase(T, T4, Conj) :-
-dl_determiner(T, T1, Conj),
-dl_adjectives(T1, T2),
-dl_noun(T2, T3, Conj),
-dl_modphrase(T3, T4, Conj).
-
+	dl_determiner(T, T1, Conj),
+	dl_adjectives(T1, T2),
+	dl_noun(T2, T3, Conj),
+	dl_modphrase(T3, T4, Conj).
+	
 dl_nounphrase(T,T1, vc_tps) :- propernoun(T,T1).
-
+	
 dl_nounphrase([i | T], T, vc_fp).
 dl_nounphrase([you | T], T, vc_sp).
 dl_nounphrase([he | T], T, vc_tps).
@@ -190,7 +157,7 @@ dl_nounphrase([this | T], T, vc_tps).
 dl_nounphrase([that | T], T, vc_tps).
 dl_nounphrase([those | T], T, vc_sp).
 dl_nounphrase([these | T], T, vc_sp).
-
+	
 % an article is the, this, a, an, etc.
 % usage:
 %	dl_determiner(T, T1, Conj)
@@ -483,20 +450,20 @@ dl_verb([goes,away|T],T, vc_tps).
 % Database Searching ----------------------------------------------
 
 knownthing([a|T],T2, S,S1) :-
-props(S,S1, T,T1),
-type(S,S1, T1,T2).
-
-thingcanbetype([a|T],T1, S,S1) :-
-inherits([a|T],T1, S,S1).
-
-thingcanbetype([a|T],T2, S,S1) :-
-s_typeprops(S,S1, T,T1),
-inherits(T1,T2, S,S1).
-
-thingcanbetype([a|T],T2, S,S1) :-
-s_typeprops(S,S1, T,T1),
-inherits(S,S1, T1,T2).
-
+	props(S,S1, T,T1),
+	type(S,S1, T1,T2).
+	
+thingcanbetype([a|T],T1, S,S1) :- 
+	inherits([a|T],T1, S,S1).
+	
+thingcanbetype([a|T],T2, S,S1) :- 
+	s_typeprops(S,S1, T,T1),
+	inherits(T1,T2, S,S1).
+	
+thingcanbetype([a|T],T2, S,S1) :- 
+	s_typeprops(S,S1, T,T1),
+	inherits(S,S1, T1,T2).
+	
 % s_typeprops(T,T1, P,P1) is true if a thing of type T,T1 has all the properties in P,P1
 s_typeprops(_,_, P,P).
 s_typeprops(T,T1, P,P2) :- typeprop(T,T1, P,P1), s_typeprops(T,T1, P1,P2).
