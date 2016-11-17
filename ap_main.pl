@@ -9,7 +9,13 @@
 %		where ... is a list of words
 
 askPatrick(Q, [thats, a, good, question]) :- dl_question(Q, []).
-askPatrick(Q, [thats, a, strange, question]) :- \+ dl_question(Q, []).
+askPatrick(Q, [I, do, not, know, what, you, mean]) :- \+ dl_question(Q, []).
+
+heyPatrick(Ans):- 
+	write("AskPatrick:   "),
+	readln(Ln),
+	askPatrick(Ln, Ans).
+	% member(End, [[], ['?'], ['.']]).
 
 askPatrick(Q, A) :- filter(Q, R), answer(R, A).
 
@@ -258,7 +264,6 @@ dl_verb_be([are | T], T, vc_sp).
 dl_verb_be([is | T], T, vc_tps).
 
 % End Language Processing -----------------------------------------
-
 
 % Database Searching ----------------------------------------------
 
