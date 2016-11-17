@@ -8,16 +8,19 @@
 %	askPatrick([...], R). or askPatrick(Q, R), readln(Q).
 %		where ... is a list of words
 
-askPatrick(Q, [thats, a, good, question]) :- dl_question(Q, []).
-askPatrick(Q, [I, do, not, know, what, you, mean]) :- \+ dl_question(Q, []).
 
 heyPatrick(Ans):- 
-	write("AskPatrick:   "),
+	write("AskPatrick:    "),
 	readln(Ln),
 	askPatrick(Ln, Ans).
-	% member(End, [[], ['?'], ['.']]).
 
-askPatrick(Q, A) :- filter(Q, R), answer(R, A).
+askPatrick(Q, "That's a good question!") :- dl_question(Q, []).
+askPatrick(Q, [I, do, not, know, what, you, mean]) :- \+ dl_question(Q, []).
+
+askPatrick(Q, A) :- filter(Q, R), 
+					answer(R, Ans_list),
+					atomic_list_concat(Ans_list, " ", Atom),
+					atom_string(Atom, A).
 
 % what is an unknown thing?
 answer([what|Q], R) :- dl_verb_be(Q,Q1, Conj), dl_nounphrase(Q1,[], Conj),
