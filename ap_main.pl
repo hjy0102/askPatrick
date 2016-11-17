@@ -15,7 +15,7 @@ heyPatrick(Ans):-
 	askPatrick(Ln, Ans).
 
 askPatrick(Q, "That's a good question!") :- dl_question(Q, []).
-askPatrick(Q, [I, do, not, know, what, you, mean]) :- \+ dl_question(Q, []).
+askPatrick(Q, "I'm not quite sure what you mean...?") :- \+ dl_question(Q, []).
 
 askPatrick(Q, A) :- filter(Q, R), 
 					answer(R, Ans_list),
